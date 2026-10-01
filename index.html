@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyIITB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body class="landing-shell">
+<script src="js/iconSprite.js"></script>
+
+<header class="topbar">
+  <a class="brand" href="./" aria-label="MyIITB home">
+    <img class="brand-logo" src="assets/logos/iit-bombay-logo.svg" alt="IIT Bombay">
+    <span class="brand-name">MY IITB</span>
+  </a>
+  <nav class="tabs" id="roleTabs" aria-label="Landing sections">
+    <span class="tab-halo" id="tabHalo"></span>
+    <button class="tab active" type="button" data-tab="Today">Today</button>
+    <button class="tab" type="button" data-tab="Campus">Campus</button>
+    <button class="tab" type="button" data-tab="Employee">Employee</button>
+    <button class="tab" type="button" data-tab="Faculty">Faculty</button>
+  </nav>
+  <div class="topbar-actions">
+    <div class="avatar" title="Guest">G</div>
+  </div>
+</header>
+
+<div class="page-header">
+  <h1 id="pageTitle">Welcome!</h1>
+  <div class="search">
+    <svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg>
+    <input type="search" placeholder="Search" aria-label="Search">
+  </div>
+</div>
+
+<main class="dashboard" id="dashboard">
+  <div class="landing-grid" data-tab="Today">
+    <section class="card std-card empty"><span>Coming soon</span></section>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+  </div>
+  <div class="landing-grid" data-tab="Campus" hidden>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+  </div>
+  <div class="landing-grid" data-tab="Employee" hidden>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+  </div>
+  <div class="landing-grid" data-tab="Faculty" hidden>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+    <section class="card std-card empty"><span>Coming soon</span></section>
+  </div>
+</main>
+
+<script>
+(function () {
+  var tabsNav = document.getElementById('roleTabs');
+  var tabHalo = document.getElementById('tabHalo');
+  var title = document.getElementById('pageTitle');
+
+  function positionTabHalo() {
+    var activeEl = tabsNav.querySelector('.tab.active');
+    if (!activeEl) { tabHalo.style.opacity = '0'; return; }
+    var navRect = tabsNav.getBoundingClientRect();
+    var tabRect = activeEl.getBoundingClientRect();
+    tabHalo.style.left = (tabRect.left - navRect.left - 7) + 'px';
+    tabHalo.style.width = (tabRect.width + 14) + 'px';
+    tabHalo.style.opacity = '1';
+  }
+
+  function activateTab(name) {
+    tabsNav.querySelectorAll('.tab').forEach(function (t) {
+      t.classList.toggle('active', t.dataset.tab === name);
+    });
+    title.textContent = name === 'Today' ? 'Welcome!' : name;
+    document.querySelectorAll('.landing-grid').forEach(function (grid) {
+      grid.hidden = grid.dataset.tab !== name;
+    });
+    requestAnimationFrame(positionTabHalo);
+  }
+
+  tabsNav.querySelectorAll('.tab').forEach(function (btn) {
+    btn.addEventListener('click', function () { activateTab(btn.dataset.tab); });
+  });
+  window.addEventListener('resize', positionTabHalo);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(positionTabHalo);
+  activateTab('Today');
+})();
+</script>
+</body>
+</html>

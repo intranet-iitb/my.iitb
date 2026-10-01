@@ -1,0 +1,1130 @@
+/*
+  Prototype V3 — dashboard.css
+  Special layouts: landing card grids, list/todo panels, entity detail
+  command-center (summary + detail cards + action card + timeline),
+  context sidebar profile block.
+
+  Sources (Prototype V2):
+  - Landing page/PI Dashboard.html          → .dashboard / .card / .list-row / .todo-*
+  - scenarios/Faculty-PI/PI - Project View.html → detail / summary / action / timeline
+  - scenarios/Co-PI/Co-PI - Project Dashboard.html → .note-banner (info strip)
+
+  Side drawers: not present as a shared pattern in V2 yet — reserved here
+  as a stub comment when that shell is introduced.
+*/
+
+/* ---------- Landing / hub card grid ---------- */
+.dashboard {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 32px 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+#todayGrid,
+#facultyGrid,
+#projectsGrid,
+#headGrid,
+#deanGrid {
+  display: contents;
+}
+
+.std-card {
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+}
+.std-card .card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.card-reminder .card-body {
+  overflow-y: auto;
+}
+.std-card.empty {
+  align-items: center;
+  justify-content: center;
+}
+.std-card.empty span {
+  color: var(--gray-400);
+  font-size: 0.78125rem;
+}
+
+.card-tall {
+  grid-row: span 2;
+}
+
+.card {
+  background: var(--page-bg);
+  border: 2px solid var(--gray-200);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 18px 12px;
+}
+
+.card-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--teal-500);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.card-icon svg { width: 14px; height: 14px; }
+
+.card-title {
+  font-size: 0.90625rem;
+  font-weight: 700;
+}
+
+.card-body {
+  padding: 0 18px 16px;
+}
+
+/* ---------- List rows (landing cards) ---------- */
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.list-row:last-child { border-bottom: none; }
+
+.std-card .list-row {
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.std-card .list-row .btn-pill,
+.std-card .todo-actions .btn-accept,
+.std-card .todo-actions .btn-pill {
+  align-self: flex-start;
+}
+.std-card .list-row:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.list-text p { margin: 0; }
+.list-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+.list-sub {
+  font-size: 0.71875rem;
+  color: var(--gray-400);
+  margin-top: 2px !important;
+}
+
+.desk-card .desk-metric {
+  margin: 0 0 14px;
+}
+.desk-card .desk-metric-value {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  line-height: 1.1;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.desk-card .desk-metric-sub {
+  margin: 6px 0 0;
+  font-size: 0.71875rem;
+  color: var(--gray-400);
+  line-height: 1.35;
+}
+
+.list-row.hidden,
+.todo-item.hidden,
+.event.hidden {
+  display: none;
+}
+
+/* ---------- To Do panel ---------- */
+.todo-item {
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 13px 14px;
+  margin-bottom: 12px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.todo-item:last-child { margin-bottom: 0; }
+.todo-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.todo-desc {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+.todo-date {
+  font-size: 0.6875rem;
+  color: var(--gray-400);
+  margin: 0 0 10px;
+}
+.todo-item .auto-approve-notice {
+  margin: 8px 0 10px;
+}
+.todo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.todo-actions .btn-reject,
+.todo-actions .btn-clarify,
+.todo-actions .btn-accept {
+  flex: 0 0 auto;
+  width: fit-content;
+  min-width: 0;
+}
+.todo-item.resolved { opacity: 0.45; }
+.todo-item.resolved .btn-reject,
+.todo-item.resolved .btn-accept { pointer-events: none; }
+.todo-item.resolved .status-pill { display: inline-block; }
+.todo-item.accepted .status-pill {
+  background: var(--teal-100);
+  color: var(--teal-600);
+}
+.todo-item.rejected .status-pill {
+  background: #fdecea;
+  color: var(--error);
+}
+
+.status-pill {
+  display: none;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  margin-top: 8px;
+}
+
+/* ---------- Info / note strips ---------- */
+.note-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--info-bg);
+  border: 1px solid #cfe4fb;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  font-size: 0.8125rem;
+  color: var(--gray-700);
+  line-height: 1.45;
+}
+.note-banner svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--info);
+  margin-top: 2px;
+}
+
+.stub-notice {
+  background: var(--gray-50);
+  border: 1px dashed var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-size: 0.78125rem;
+  color: var(--gray-400);
+  text-align: center;
+}
+
+/* ---------- Entity detail: page wrap + bars ---------- */
+.page-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+
+/* Project / entity detail: use full main column width */
+.app-shell.detail-shell .page-wrap {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 24px 28px 56px;
+}
+
+/* Detail page heading: title + code pill inline, status/type as a real
+   subtitle line (unlike the hub's .main-heading span, which stays hidden). */
+.app-shell.detail-shell .main-heading h1 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.app-shell.detail-shell .main-heading .detail-status-line {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--gray-400);
+  margin-top: 4px;
+}
+.detail-code-pill {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--teal-600);
+  background: var(--teal-50);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  padding: 2px 10px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.app-shell.detail-shell .detail-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px 28px;
+}
+/* Chunked cards (project-detail Edit + View) were authored as 2-field pairs per row —
+   the 3-column detail-shell default scrambles that pairing across rows. Selector matches
+   .app-shell.detail-shell .detail-grid's specificity (3 classes) plus one more, so it wins
+   regardless of source order. */
+.app-shell.detail-shell .wizard-cards-wrap .detail-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fund-callout {
+  background: var(--teal-50);
+  border: 1px solid var(--teal-200);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin-top: 16px;
+}
+.fund-callout h3 {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: var(--teal-700);
+}
+.fund-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 5px 0;
+  font-size: 0.8125rem;
+}
+.fund-row .fr-label { color: var(--gray-700); }
+.fund-row .fr-value { font-weight: 700; color: var(--gray-700); font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.fund-row.fund-total {
+  font-size: 0.9375rem;
+  padding-bottom: 10px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--teal-200);
+}
+.fund-row.fund-total .fr-value { color: var(--teal-700); }
+.fr-meta {
+  margin: 0 0 10px;
+  font-size: 0.71875rem;
+  color: var(--gray-400);
+  line-height: 1.35;
+}
+.facility-review {
+  margin-top: 18px;
+}
+.facility-review-hint {
+  margin: 0 0 12px;
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  line-height: 1.4;
+}
+.facility-review-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.facility-review-row:first-of-type { border-top: none; padding-top: 0; }
+.facility-review-label {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+.facility-review-meta {
+  margin: 2px 0 0;
+  font-size: 0.75rem;
+  color: var(--gray-400);
+}
+.chip-muted {
+  background: var(--gray-50);
+  color: var(--gray-400);
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+.top-bar-note {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+}
+
+.summary-bar {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  background: var(--teal-50);
+  border: 1px solid var(--teal-200);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin-bottom: 20px;
+}
+.summary-item .s-label {
+  font-size: 0.65625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--teal-600);
+  margin: 0 0 3px;
+}
+.summary-item .s-value {
+  font-size: 0.84375rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Detail cards / field grid ---------- */
+.detail-card {
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+}
+.detail-card + .detail-card { margin-top: 32px; }
+.detail-card.wizard-cards-wrap {
+  background: none;
+  border: none;
+  padding: 0;
+}
+.wizard-cards-wrap .detail-card + .detail-card { margin-top: 32px; }
+
+/* One merged card, several logical groups inside it (Partner Information,
+   Project Info, Client Details, ...) — spacing alone separates them, no
+   divider line and no repeated sub-heading when the group is just Q&A rows
+   (each row's own label already says what it is). */
+.card-section { margin-top: 34px; }
+.card-section:first-child { margin-top: 0; }
+.card-section h3 { font-size: 0.84375rem; font-weight: 700; margin: 0 0 14px; color: var(--gray-700); }
+/* MOU/IPR: [data-bind="body"] wraps its own .card-section children in a plain div, so its
+   first child's :first-child margin reset doesn't see the "Where it is" section as a sibling —
+   put the gap on the wrapper itself instead, only when something actually precedes it. */
+.card-section + [data-bind="body"] { margin-top: 34px; display: block; }
+
+/* Partner Information / Inventors / Log — data-table rows built from
+   name + code + designation instead of a single text cell. */
+.data-table .role-cell {
+  font-size: 0.65625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--teal-600);
+  white-space: nowrap;
+}
+.data-table .name-cell { font-weight: 600; color: var(--gray-700); }
+.data-table .sub-cell { font-size: 0.75rem; color: var(--gray-400); margin-top: 2px; }
+.data-table .phone-cell { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.data-table .code-pill {
+  display: inline-block;
+  font-size: 0.71875rem;
+  font-weight: 700;
+  color: var(--teal-600);
+  background: var(--teal-50);
+  padding: 2px 9px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Staff profile card — candidate-portal style (photo + summary rows), not a table:
+   this record's identity is a person, matching how the Candidate profile card reads. */
+.cand-profile-row { display: flex; gap: 18px; align-items: flex-start; }
+.cand-photo {
+  width: 88px; height: 88px; border-radius: var(--radius-lg); background: var(--teal-100);
+  color: var(--teal-700); display: flex; align-items: center; justify-content: center;
+  font-size: 1.625rem; font-weight: 700; flex-shrink: 0; border: 1px solid var(--teal-200);
+}
+.cand-fields { flex: 1; min-width: 0; }
+.sig-strip {
+  margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--gray-200);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.sig-box {
+  width: 140px; height: 44px; border: 1px dashed var(--gray-300); border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center; font-size: 0.6875rem; color: var(--gray-300);
+}
+@media (max-width: 640px) { .cand-profile-row { flex-direction: column; } }
+/* Headingless cards (no <h2>): rely on gap alone to read as a new topic,
+   so give the first field a touch less top breathing room than a heading would. */
+.detail-card:not(:has(> h2)) { padding-top: 20px; }
+.detail-card h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 18px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 32px;
+}
+.detail-field .d-label {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  margin: 0 0 4px;
+}
+.detail-field .d-value {
+  font-size: 0.875rem;
+  color: var(--gray-700);
+  margin: 0;
+  line-height: 1.4;
+}
+/* View / Approve Q&A — shared across Project · MOU · IPR · Staff
+   Answers read like filled text fields (not radio/checkbox widgets). */
+.view-qa,
+.project-qa {
+  align-items: start;
+}
+.view-qa .detail-field .d-label,
+.project-qa .detail-field .d-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-400);
+  margin: 0 0 2px;
+}
+.view-qa .detail-field .d-value,
+.project-qa .detail-field .d-value {
+  font-size: 0.84375rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  padding: 8px 0 6px;
+  border-bottom: 1px solid var(--gray-100);
+  min-height: 1.4em;
+  line-height: 1.45;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.view-qa .detail-field .d-value.is-empty,
+.project-qa .detail-field .d-value.is-empty {
+  color: var(--gray-300);
+  font-weight: 400;
+}
+.detail-field.span-2 { grid-column: 1 / -1; }
+.view-section-heading {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  margin: 26px 0 12px;
+  padding-top: 6px;
+  border-top: 1px solid var(--gray-100);
+  letter-spacing: 0.01em;
+}
+.view-section-heading:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.view-qa + .view-section-heading,
+.project-qa + .view-section-heading {
+  margin-top: 26px;
+}
+
+/* View layout parity with Edit forms — stack + paired rows (not 3-col grid) */
+.view-qa-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.view-qa-stack .view-field-full,
+.view-qa-stack .detail-field.view-field-full {
+  width: 100%;
+}
+.view-qa-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 32px;
+  align-items: start;
+}
+.view-qa-row .detail-field {
+  min-width: 0;
+}
+.view-qa-stack .view-qa-row .detail-field .d-value {
+  border-bottom: 1px solid var(--gray-100);
+}
+
+/* Client Details — paired rows fill card width (project-qa align-items:start was shrinking rows) */
+.client-details-view,
+.client-details-form {
+  width: 100%;
+}
+.client-details-form {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+.additional-institution {
+  margin-top: 14px;
+}
+.additional-institution .institution-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.additional-institution .institution-header span {
+  font-size: 0.78125rem;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+#addInstitutionBtn {
+  margin-top: 14px;
+}
+
+/* "With <Role>" — standalone indicator of who currently holds a record, independent of the
+   colored status badge (which describes what happened, not who's next). */
+.with-badge {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--gray-400);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-pill);
+  padding: 3px 10px;
+}
+.view-qa-stack.client-details-view {
+  align-items: stretch;
+}
+.view-qa-stack.client-details-view .view-qa-row {
+  width: 100%;
+}
+.client-details-view .detail-field .d-value {
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+.client-details-view .detail-field .d-label {
+  white-space: normal;
+}
+@media (min-width: 901px) {
+  .client-details-view .view-qa-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+.view-chip-row {
+  margin-top: 6px;
+}
+.chip.chip-readonly {
+  cursor: default;
+  padding-right: 12px;
+}
+.view-budget-parity {
+  margin-top: 4px;
+}
+.view-budget-parity .view-budget-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+}
+.view-budget-parity .view-budget-row .b-label {
+  font-size: 0.8125rem;
+  color: var(--gray-700);
+  flex: 1;
+  min-width: 0;
+}
+.view-budget-parity .view-budget-row .d-value {
+  flex-shrink: 0;
+  width: 150px;
+  text-align: right;
+  border-bottom: none;
+  padding: 0;
+  min-height: 0;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.view-budget-parity .view-budget-row.grand-total .b-label,
+.view-budget-parity .view-budget-row.grand-total .d-value {
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+.view-budget-parity .budget-divider {
+  border: none;
+  border-top: 1px solid var(--gray-200);
+  margin: 8px 0;
+}
+
+/* ---------- Action card (approvals / decisions) ---------- */
+.action-card .who {
+  font-size: 0.78125rem;
+  color: var(--gray-400);
+  margin-bottom: 12px;
+}
+.action-card .who strong { color: var(--gray-700); }
+.action-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.waiting-msg {
+  font-size: 0.8125rem;
+  color: var(--gray-400);
+  font-style: italic;
+}
+.claim-note {
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  margin: 10px 0 0;
+}
+.decided-msg {
+  font-size: 0.84375rem;
+  font-weight: 700;
+  color: var(--success);
+  margin-top: 10px;
+}
+
+/* ---------- Activity timeline ---------- */
+.tl-item {
+  display: flex;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.tl-item:last-child { border-bottom: none; }
+.tl-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+  background: var(--teal-500);
+}
+.tl-body { flex: 1; }
+.tl-body .actor {
+  font-weight: 700;
+  color: var(--gray-700);
+  font-size: 0.8125rem;
+}
+.tl-body .desc {
+  color: var(--gray-700);
+  font-size: 0.8125rem;
+}
+.tl-body .note {
+  color: var(--gray-400);
+  font-size: 0.75rem;
+  margin-top: 3px;
+  font-style: italic;
+}
+.tl-date {
+  font-family: inherit;
+  font-size: 0.71875rem;
+  color: var(--gray-300);
+  white-space: nowrap;
+}
+
+/* ---------- Detail context sidebar (entity profile block) ---------- */
+.profile-block {
+  padding: 28px 24px 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--gray-100);
+}
+.profile-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background: var(--teal-500);
+  color: #fff;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profile-avatar svg { width: 28px; height: 28px; }
+.profile-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  margin: 0 0 16px;
+  line-height: 1.35;
+}
+.profile-nav {
+  padding: 16px;
+  flex: 1;
+}
+
+/* Detail sidebar is slightly wider than list hubs */
+.app-sidebar.context-sidebar {
+  width: 260px;
+  padding: 0;
+}
+
+.app-shell.detail-shell .app-main {
+  padding: 0;
+}
+/* Create/Edit wizards (.form-page) keep their own padding — the rule above is only
+   for View/Approve's .page-wrap, which supplies its own padding instead. */
+.app-shell.detail-shell .app-main.form-page {
+  padding: 24px 2% 64px;
+}
+@media (max-width: 720px) {
+  .app-shell.detail-shell .app-main.form-page {
+    padding: 20px 16px 48px;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 20px 32px;
+  }
+  .app-shell.detail-shell .detail-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .detail-grid,
+  .app-shell.detail-shell .detail-grid { grid-template-columns: 1fr; }
+  .view-qa-row { grid-template-columns: 1fr; }
+  .app-shell.detail-shell .app-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+  }
+  .app-shell.detail-shell .page-wrap {
+    padding: 20px 16px 48px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+  .card-tall {
+    grid-row: auto;
+  }
+}
+
+/* ---------- Landing shell (V2 PI Dashboard topbar + tab halo) ---------- */
+body.landing-shell {
+  background: var(--surface);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 22px 24px;
+  background: var(--page-bg);
+  overflow: visible;
+}
+
+.brand {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+  position: absolute;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+.brand-logo { width: 34px; height: 34px; flex-shrink: 0; object-fit: contain; }
+.brand-name {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--gray-700);
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  position: relative;
+  top: 14px;
+  overflow: visible;
+}
+
+/* White "physical tab" halo behind the active tab */
+.tab-halo {
+  --notch: 14px;
+  position: absolute;
+  top: -9px;
+  bottom: -7.5px;
+  background: var(--surface);
+  border-radius: 22px 22px 0 0;
+  transition: left 0.2s ease, width 0.2s ease, opacity 0.15s ease;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.tab-halo::before,
+.tab-halo::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: var(--notch);
+  height: var(--notch);
+}
+.tab-halo::before {
+  left: calc(-1 * var(--notch));
+  background: radial-gradient(circle at top left, var(--page-bg) var(--notch), var(--surface) var(--notch));
+}
+.tab-halo::after {
+  right: calc(-1 * var(--notch));
+  background: radial-gradient(circle at top right, var(--page-bg) var(--notch), var(--surface) var(--notch));
+}
+
+.tab {
+  appearance: none;
+  border: 1px solid var(--gray-200);
+  background: var(--surface);
+  color: var(--gray-700);
+  font-family: inherit;
+  font-size: 0.84375rem;
+  font-weight: 500;
+  min-width: 132px;
+  width: auto;
+  padding: 8px 14px;
+  text-align: center;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.tab:hover { border-color: var(--gray-300); }
+.tab.active {
+  background: var(--teal-500);
+  border-color: var(--teal-500);
+  color: #ffffff;
+  z-index: 2;
+}
+
+.topbar-actions {
+  position: absolute;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.topbar-actions .icon-btn {
+  background: transparent;
+  width: 36px;
+  height: 36px;
+}
+.topbar-actions .icon-btn svg { width: 22px; height: 22px; }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 32px 18px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.page-header h1 {
+  font-size: 1.625rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+.page-header .search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-pill);
+  padding: 9px 16px;
+  width: 260px;
+  color: var(--gray-400);
+}
+.page-header .search svg { width: 15px; height: 15px; flex-shrink: 0; }
+.page-header .search input {
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.84375rem;
+  width: 100%;
+  background: transparent;
+  color: var(--gray-700);
+}
+.page-header .search input::placeholder { color: var(--gray-400); }
+
+.landing-grid[hidden] { display: none !important; }
+.landing-grid { display: contents; }
+
+.schedule-box {
+  background: var(--surface);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  max-height: 210px;
+  overflow-y: auto;
+}
+.schedule-row {
+  display: flex;
+  border-bottom: 1px solid var(--gray-100);
+  min-height: 68px;
+}
+.schedule-row:last-child { border-bottom: none; }
+.schedule-time {
+  flex: 0 0 58px;
+  padding: 10px 8px;
+  font-size: 0.6875rem;
+  color: var(--gray-400);
+  border-right: 1px solid var(--gray-100);
+}
+.schedule-content { flex: 1; padding: 8px; display: flex; align-items: center; }
+.event {
+  width: 100%;
+  border-left: 3px solid var(--teal-500);
+  background: var(--teal-50);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 7px 10px;
+}
+.event-title { font-size: 0.78125rem; font-weight: 600; color: var(--gray-700); margin: 0; }
+.event-meta { font-size: 0.6875rem; color: var(--gray-400); margin: 2px 0 0; }
+
+.empty-state {
+  grid-column: 1 / -1;
+  border: 1px dashed var(--gray-300);
+  border-radius: var(--radius-lg);
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--gray-400);
+}
+.empty-state svg { width: 32px; height: 32px; margin: 0 auto 12px; color: var(--gray-300); }
+.empty-state p { margin: 0; font-size: 0.84375rem; }
+.empty-state strong { display: block; color: var(--gray-700); font-size: 0.9375rem; margin-bottom: 4px; }
+
+/* ---------- HoD / Dean project hub overview ---------- */
+.hub-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.hub-stat {
+  background: var(--page-bg);
+  border: 2px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.hub-stat-label {
+  margin: 0;
+  font-size: 0.71875rem;
+  font-weight: 600;
+  color: var(--gray-400);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.hub-stat-value {
+  margin: 8px 0 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  letter-spacing: -0.3px;
+  line-height: 1.15;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.hub-stat-sub {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+  color: var(--gray-400);
+  line-height: 1.35;
+}
+.hub-overview[hidden],
+.hub-filters[hidden] {
+  display: none !important;
+}
+.hub-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hub-filter {
+  border: 1.5px solid var(--gray-200);
+  background: #fff;
+  color: var(--gray-600);
+  font: inherit;
+  font-size: 0.78125rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.hub-filter:hover { border-color: var(--teal-500); color: var(--teal-600); }
+.hub-filter.active {
+  background: var(--teal-500);
+  border-color: var(--teal-500);
+  color: #fff;
+}
+@media (max-width: 980px) {
+  .hub-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .page-header .search { width: 100%; }
+  .tabs { flex-wrap: wrap; justify-content: center; top: 0; }
+  .brand { position: static; }
+  .topbar { flex-wrap: wrap; gap: 16px; justify-content: flex-start; }
+  .topbar-actions { position: static; margin-left: auto; }
+}
+
+/* ---------- Side drawer (reserved — not extracted from V2 yet) ----------
+.side-drawer { }
+.side-drawer.open { }
+.side-drawer-backdrop { }
+*/

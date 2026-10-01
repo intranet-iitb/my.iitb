@@ -1,0 +1,300 @@
+/*
+  Prototype V3 — main.css
+  Reset, design tokens (:root), and shell layout grids.
+  Extracted from Prototype V2 page styles (e.g. PI - Project Dashboard.html).
+  Components (badges, tables, buttons) → components.css (not yet).
+  Special layouts (split views, action cards) → dashboard.css (not yet).
+*/
+
+/* ---------- Design tokens ---------- */
+:root {
+  --teal-50: #f3fbf9;
+  --teal-100: #e0f8f4;
+  --teal-200: #b8eae2;
+  --teal-500: #019487;
+  --teal-600: #007f73;
+  --teal-700: #103d37;
+
+  --gray-50: #f9f9fb;
+  --gray-100: #eff0f3;
+  --gray-200: #e0e1e6;
+  --gray-300: #b9bbc6;
+  --gray-400: #80828d;
+  --gray-700: #1e1f24;
+
+  --page-bg: #f5f9f8;
+  --surface: #ffffff;
+
+  --success: #43a35e;
+  --error: #d65a4a;
+  --warning: #e8a100;
+  --info: #2f80ed;
+  --info-bg: #eef6ff;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-pill: 999px;
+
+  /* Candidate portal accent (overrides teal tokens on body.role-candidate) */
+  --cand-blue: #1D4ED8;
+  --cand-blue-600: #1e40af;
+  --cand-blue-700: #1e3a8a;
+  --cand-blue-100: #dbeafe;
+  --cand-blue-50: #eff6ff;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 2.5rem;
+  --space-8: 3rem;
+
+  --header-height: 4.9375rem;
+  --sidebar-width: 15.4375rem;
+  --font-sans: "DM Sans", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "DM Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* Data-table stripe / chrome */
+  --table-header-bg: #eff0f3;
+  --table-row-odd: #ffffff;
+  --table-row-even: #f9f9fb;
+  --table-row-line: #e0e1e6;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* rem base: 16px up to laptop widths, scaling to 18px by 1920px so text
+     doesn't read tiny on large desktop monitors. Layout widths/spacing stay
+     in px — only rem-based type scales. */
+  font-size: clamp(16px, 11.07px + 0.361vw, 18px);
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--gray-700);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* ---------- Shell layout: header ---------- */
+.app-header {
+  height: var(--header-height);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--gray-200);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.header-crest {
+  width: 2.125rem;
+  height: 2.125rem;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.portal-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.portal-title strong {
+  font-size: 1.3125rem;
+  font-weight: 700;
+  color: var(--teal-600);
+  letter-spacing: -0.2px;
+}
+
+.portal-title span {
+  font-size: 0.8125rem;
+  color: var(--gray-400);
+}
+
+/* Header subtitle hidden — title only (index keeps data-fixed-subtitle). */
+.app-header .portal-title span:not([data-fixed-subtitle]) {
+  display: none;
+}
+
+/* ---------- Shell layout: sidebar + main ----------
+   The shell is locked to exactly the viewport height left below the header
+   (not just "as tall as its content") — sidebar and main each scroll
+   independently inside that fixed box, so the sidebar never travels with
+   page scroll. Reverts to normal stacked document flow on mobile below. */
+.app-shell {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  /* dvh accounts for mobile browser chrome show/hide; vh doesn't */
+  height: calc(100dvh - var(--header-height));
+  min-height: 0;
+  overflow: hidden;
+}
+
+.app-sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--gray-200);
+  padding: 40px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 30;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-spacer {
+  flex: 1;
+}
+
+.sidebar-footer {
+  margin-top: 12px;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 32px 48px;
+  overflow-y: auto;
+}
+
+.main-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.main-heading h1 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.main-heading span {
+  display: none;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.toolbar-left,
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Responsive shell ---------- */
+@media (max-width: 980px) {
+  .app-shell {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+
+  .app-sidebar {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    align-self: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 12px 16px;
+    border-right: none;
+    border-bottom: 1px solid var(--gray-200);
+    position: static;
+  }
+
+  .nav-list {
+    flex-direction: row;
+  }
+
+  .sidebar-spacer {
+    display: none;
+  }
+
+  .sidebar-footer {
+    margin: 0;
+  }
+
+  .app-main {
+    padding: 20px;
+    overflow-y: visible;
+  }
+}
+
+/* Candidate role — blue accent (#1D4ED8) instead of teal */
+body.role-candidate {
+  --teal-50: var(--cand-blue-50);
+  --teal-100: var(--cand-blue-100);
+  --teal-200: #bfdbfe;
+  --teal-500: var(--cand-blue);
+  --teal-600: var(--cand-blue-600);
+  --teal-700: var(--cand-blue-700);
+  --page-bg: #f5f7fb;
+}
